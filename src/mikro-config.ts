@@ -10,6 +10,7 @@ export const config = defineConfig<PostgreSqlDriver>({
   port: 5432,
   user: 'test',
   password: 'test',
+  debug: true,
   migrations: {
     tableName: 'migrations',
     pathTs: `./src/migrations`,
