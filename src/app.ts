@@ -15,13 +15,19 @@ const start = async () => {
   await orm.em
     .fork()
     .createQueryBuilder(User, 'user')
-    .clone()
-    .where({
-      location: {
-        location: 'Frankfurt',
-      },
+    .leftJoinAndSelect('user.servers', 'test')
+    .select('user.id')
+    // .where({
+    //   location: {
+    //     location: 'Frankfurt',
+    //   },
+    // })
+    .orderBy({
+      id: 'DESC',
     })
-    .getResult();
+    .offset(1)
+    .limit(2)
+    .getResultAndCount();
 };
 
 start();
