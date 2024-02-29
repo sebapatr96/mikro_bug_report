@@ -1,4 +1,4 @@
-import { MikroORM, PostgreSqlDriver } from '@mikro-orm/postgresql';
+import { MikroORM, PopulateHint, PostgreSqlDriver } from '@mikro-orm/postgresql';
 import { User } from './entities/user';
 import { config } from './mikro-config';
 
@@ -12,22 +12,22 @@ const start = async () => {
   await migrator.createMigration();
   await migrator.up();
 
-  await orm.em
-    .fork()
-    .createQueryBuilder(User, 'user')
-    .leftJoinAndSelect('user.servers', 'test')
-    .select('user.id')
-    // .where({
-    //   location: {
-    //     location: 'Frankfurt',
-    //   },
-    // })
-    .orderBy({
-      id: 'DESC',
-    })
-    .offset(1)
-    .limit(2)
-    .getResultAndCount();
+  await orm.em.fork().find(
+    User,
+    {
+      servers: {
+        $every: {
+          name: {
+            $ne: 'test',
+          },
+        },
+      },
+    },
+    {
+      populate: ['servers'],
+      populateWhere: PopulateHint.INFER,
+    },
+  );
 };
 
 start();
