@@ -1,3 +1,3 @@
-import { config } from '@src/mikro-config';
+import { config } from './src/mikro-config';
 
-export default config
+export default config;

@@ -1,6 +1,7 @@
 import { defineConfig } from '@mikro-orm/core';
 import { Migrator } from '@mikro-orm/migrations';
 import { PostgreSqlDriver } from '@mikro-orm/postgresql';
+import { SeedManager } from '@mikro-orm/seeder';
 
 export const config = defineConfig<PostgreSqlDriver>({
   driver: PostgreSqlDriver,
@@ -23,5 +24,13 @@ export const config = defineConfig<PostgreSqlDriver>({
     emit: 'ts',
     snapshotName: '.snapshot',
   },
-  extensions: [Migrator],
+  seeder: {
+    path: './seeders',
+    pathTs: './src/seeders',
+    defaultSeeder: 'DatabaseSeeder',
+    glob: '!(*.d).{js,ts}',
+    emit: 'ts',
+    fileName: (className: string) => className,
+  },
+  extensions: [Migrator, SeedManager],
 });
